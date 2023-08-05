@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 markup = 0.25
 
 
@@ -19,6 +19,7 @@ CATEGORY = (
     ('Food', 'Food'),
 )
 
+
 class Product(models.Model):
     name = models.CharField(max_length=100)
     category = models.CharField(max_length=20, choices=CATEGORY)
@@ -26,5 +27,21 @@ class Product(models.Model):
     cost = models.FloatField()
     quantity = models.PositiveIntegerField()
 
+    class Meta:
+        verbose_name_plural = 'Product'
+
     def __str__(self):
         return f'{self.name} | {self.product_id} | {self.cost} | {self.quantity}'
+
+
+class Order(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    staff = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_quantity = models.PositiveIntegerField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Order'
+
+    def __str__(self):
+        return f'{self.product} ordered by {self.staff.username} on the date of {self.date}'
